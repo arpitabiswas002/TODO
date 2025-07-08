@@ -1,0 +1,41 @@
+.activity-log-panel {
+  background-color: rgba(33, 43, 54, 0.9);
+  padding: 1.5rem;
+  border-radius: 8px;
+  min-width: 300px;
+}
+
+.activity-log-panel h2 {
+  color: #000000;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.activity-list {
+  list-style: none;
+  padding: 0;
+}
+
+.activity-item {
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.activity-item:last-child {
+  border-bottom: none;
+}
+
+.activity-details {
+  color: #000000;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.activity-time {
+  color: #666666;
+  font-size: 0.85rem;
+  display: block;
+}

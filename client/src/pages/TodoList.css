@@ -1,0 +1,345 @@
+.kanban-board-container {
+  padding: 1.5rem;
+  background: transparent;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.kanban-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  
+  background-color: rgba(33, 43, 54, 0.3); /* Transparent dark */
+  backdrop-filter: blur(10px);            /* Frosted glass effect */
+  -webkit-backdrop-filter: blur(10px);    /* For Safari support */
+  
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); /* Slightly deeper shadow for contrast */
+  color: white; /* Ensure text remains readable on dark translucent bg */
+}
+
+
+.kanban-header h1 {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 2.5rem;
+}
+
+.header-user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header-user-info span {
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.add-task-btn {
+  background-color: #00ffcc;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  margin-right: 1rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.add-task-btn:hover {
+  background-color: #2e9d6e;
+}
+
+.logout-btn {
+  background-color: #00bfff;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.logout-btn:hover {
+  background-color: #0065ff;
+}
+
+.kanban-board-layout {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  height: calc(100vh - 120px); /* Adjust based on header height */
+}
+
+/* Add Task Form */
+.add-task-form {
+  background-color: rgba(33, 43, 54, 0.9);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.add-task-form h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #ffffff;
+}
+
+.add-task-form .form-group {
+  margin-bottom: 1rem;
+}
+
+.add-task-form input[type="text"],
+.add-task-form textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #dfe1e6;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  transition: border-color 0.2s;
+}
+
+.add-task-form input[type="text"]:focus,
+.add-task-form textarea:focus {
+  outline: none;
+  border-color: #4c9aff;
+  box-shadow: 0 0 0 2px rgba(0, 121, 191, 0.2);
+}
+
+.add-task-form textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.submit-task-btn {
+  background-color: #00bfff;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.submit-task-btn:hover {
+  background-color: #0065ff;
+}
+
+.kanban-board {
+  display: flex;
+  gap: 1.5rem;
+  flex-grow: 1;
+  overflow-x: auto;
+  height: 100%;
+  padding-bottom: 1rem; /* For scrollbar spacing */
+}
+
+.kanban-column {
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 3px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.todo-col {
+  background-color: rgba(255, 153, 51, 0.4); /* Bright orange with 40% opacity */
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-radius: 10px;
+  padding: 1rem;
+  border: 1px solid rgba(255, 153, 51, 0.4);
+  box-shadow: 0 4px 10px rgba(255, 153, 51, 0.3); /* Warm glow */
+  color: #2a2a2a; /* Dark text for contrast */
+}
+
+
+
+.in_progress-col {
+  background-color: rgba(51, 153, 255, 0.35); /* Bright blue with 35% opacity */
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-radius: 10px;
+  padding: 1rem;
+  border: 1px solid rgba(51, 153, 255, 0.4); /* Blue border */
+  box-shadow: 0 4px 10px rgba(51, 153, 255, 0.25); /* Blue glow */
+  color: #1a1a1a; /* Darker text for readability */
+}
+
+
+.done-col {
+  background-color: rgba(0, 204, 102, 0.35); /* Bright green */
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-radius: 10px;
+  padding: 1rem;
+  border: 1px solid rgba(0, 204, 102, 0.4); /* Subtle green border */
+  box-shadow: 0 4px 10px rgba(0, 204, 102, 0.2); /* Green glow */
+  color: #1a1a1a; /* Good contrast for readability */
+}
+
+
+.kanban-column h2 {
+  color: #000000;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  padding: 0 0.5rem;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tasks-container {
+  min-height: 100px; /* For drag-and-drop visibility */
+  flex-grow: 1;
+}
+
+.task-card {
+  background-color: rgba(255, 255, 255, 0.1); /* Transparent white */
+  backdrop-filter: blur(8px); /* Frosted glass effect */
+  -webkit-backdrop-filter: blur(8px); /* Safari support */
+  border-radius: 8px; /* Slightly more rounded */
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2); /* Softer shadow */
+  cursor: grab;
+  transition: box-shadow 0.2s, transform 0.2s;
+  color: rgb(0, 0, 0); /* Better contrast on dark backgrounds */
+  border: 1px solid rgba(255, 255, 255, 0.15); /* Optional subtle border */
+}
+
+.task-card:hover {
+  box-shadow: 0 4px 8px rgba(9,30,66,.25), 0 0 1px rgba(9,30,66,.13);
+  transform: translateY(-2px);
+}
+
+.task-card:active {
+  cursor: grabbing;
+  background-color: rgba(0, 0, 0, 0.9);
+}
+
+.task-card.dragging {
+  opacity: 0.5;
+  transform: rotate(3deg);
+}
+
+.kanban-column.drag-over .tasks-container {
+  background-color: rgba(221, 238, 255, 0.7); /* Light blue highlight */
+  border-radius: 3px;
+}
+
+.task-card h3 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.task-card p {
+  font-size: 0.9rem;
+  color: #000000;
+  white-space: pre-wrap;
+  margin-bottom: 1rem;
+}
+
+.task-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.task-assignee {
+  font-size: 0.8rem;
+  color: #000000;
+  font-weight: 500;
+}
+
+.smart-assign-btn {
+  background-color: rgba(33, 43, 54, 0.9);
+  border: 1px solid #dfe1e6;
+  border-radius: 3px;
+  color: #ffffff;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.smart-assign-btn:hover {
+  background-color: #e9ebf0;
+  border-color: #c1c7d0;
+}
+
+.activity-log-panel {
+  width: 320px;
+  min-width: 320px;
+  background-color: rgba(255, 255, 255, 0.1); /* Light transparent */
+  backdrop-filter: blur(10px); /* Frosted-glass effect */
+  -webkit-backdrop-filter: blur(10px); /* For Safari support */
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 100px); /* Adjust based on header height */
+  color: white; /* Optional: use white text for better contrast */
+}
+
+
+.activity-log-panel h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  color: #ffffff;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #dfe1e6;
+}
+
+.activity-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  overflow-y: auto;
+  flex-grow: 1;
+}
+
+.activity-item {
+  padding: 0.75rem;
+  border-bottom: 1px solid #000000;
+  font-size: 0.9rem;
+}
+
+.activity-item:last-child {
+  border-bottom: none;
+}
+
+.activity-details {
+  color: #000000;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.activity-time {
+  color: #666666;
+  font-size: 0.85rem;
+  display: block;
+  margin-top: 0.25rem;
+}
+
+.error-message {
+  color: #000000;
+  background-color: #ffbdad;
+  padding: 1rem;
+  border-radius: 3px;
+  margin-bottom: 1rem;
+}
