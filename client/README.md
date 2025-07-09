@@ -89,20 +89,19 @@ Edit
 
 ## Live Deployment
 
-- Frontend: [Frontend Deployed Link Here]
-- Backend: [Backend Deployed Link Here]
+- Frontend: [\[Frontend Deployed Link Here\]](https://chic-medovik-95ac29.netlify.app/todos)
 
 ## Demo Video
 
-- [Demo Video Link Here]
+- [\[Demo Video Link Here\]](https://drive.google.com/file/d/1d0YoSa5ppnvO-JGC6FtiPKHX3NPRSBFF/view?usp=sharing)
 
 ## Logic Document
 
-- [Link to Logic_Document.md or Logic_Document.pdf]
+- https://drive.google.com/file/d/1yuusP9c-yCOEdGqBfCEACMoqQiLfsVpJ/view?usp=sharing
 
 ## Smart Assign Logic
 
-When the "Smart Assign" button is clicked on a task, the backend fetches the number of active (non-done) tasks assigned to each user. It then assigns the task to the user with the fewest active tasks to balance the workload. This logic is implemented in the backend and triggered via an API call from the frontend.
+When the "Smart Assign" button is clicked on a task, the backend fetches the number of active (non-done) tasks assigned to each user. It then assigns the task to the user with the fewest active tasks to balance the workload. This logic is implemented in the backend and triggered via an API cll from the frontend.
 
 ## Conflict Handling Logic
 
