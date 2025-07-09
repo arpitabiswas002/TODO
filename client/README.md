@@ -1,70 +1,125 @@
-# Getting Started with Create React App
+# Collaborative Real-Time To-Do Board
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Project Overview
 
-## Available Scripts
+This is a full-stack collaborative to-do board where multiple users can register, log in, create tasks, assign them, and manage their progress in real time. The application is similar to a simplified Trello board but includes additional features like Smart Assign and Conflict Handling.
 
-In the project directory, you can run:
+## Tech Stack Used
 
-### npm start
+- Frontend: React.js, React Router, Socket.IO Client, CSS (no UI frameworks used)
+- Backend: Node.js, Express.js, MongoDB, Mongoose, Socket.IO
+- Hosting: Frontend (Vercel), Backend (Render)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Features
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- User registration and login with JWT-based authentication and hashed passwords
+- Kanban board with three columns: Todo, In Progress, Done
+- Drag-and-drop functionality to move tasks between columns
+- Assign and reassign tasks to any user
+- Smart Assign button that auto-assigns tasks to the user with the fewest active tasks
+- Real-time updates across all users using WebSockets (Socket.IO)
+- Activity log panel showing the last 20 changes, updated in real time
+- Conflict detection when two users edit the same task simultaneously
+- Responsive layout for both desktop and mobile screens
+- At least one custom animation
+- Custom-built UI without any CSS libraries or frameworks
 
-### npm test
+## Setup and Installation Instructions
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Backend Setup
 
-### npm run build
+1. Navigate to the backend folder:
+cd server
 
-Builds the app for production to the build folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+markdown
+Copy
+Edit
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+2. Create a .env file in the root of the server folder and add the following:
+MONGO_URI=your_mongo_connection_string
+JWT_SECRET=your_secret_key
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+markdown
+Copy
+Edit
 
-### npm run eject
+3. Install dependencies:
+npm install
 
-**Note: this is a one-way operation. Once you eject, you can't go back!**
+markdown
+Copy
+Edit
 
-If you aren't satisfied with the build tool and configuration choices, you can eject at any time. This command will remove the single build dependency from your project.
+4. Start the backend server:
+npm start
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except eject will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+markdown
+Copy
+Edit
 
-You don't have to ever use eject. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Frontend Setup
 
-## Learn More
+1. Navigate to the frontend folder:
+cd client
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+markdown
+Copy
+Edit
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+2. Install dependencies:
+npm install
 
-### Code Splitting
+markdown
+Copy
+Edit
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+3. Start the frontend development server:
+npm start
 
-### Analyzing the Bundle Size
+css
+Copy
+Edit
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+4. Open your browser and go to:
+http://localhost:3000
 
-### Making a Progressive Web App
+pgsql
+Copy
+Edit
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## Live Deployment
 
-### Advanced Configuration
+- Frontend: [Frontend Deployed Link Here]
+- Backend: [Backend Deployed Link Here]
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## Demo Video
 
-### Deployment
+- [Demo Video Link Here]
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## Logic Document
 
-### npm run build fails to minify
+- [Link to Logic_Document.md or Logic_Document.pdf]
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Smart Assign Logic
+
+When the "Smart Assign" button is clicked on a task, the backend fetches the number of active (non-done) tasks assigned to each user. It then assigns the task to the user with the fewest active tasks to balance the workload. This logic is implemented in the backend and triggered via an API call from the frontend.
+
+## Conflict Handling Logic
+
+If two users attempt to edit the same task at the same time, the system detects the conflict on the backend. Both versions of the task (original and conflicting) are sent back to the clients. Each user is prompted to resolve the conflict by either merging the content or choosing one version to overwrite the other. This ensures no accidental overwrites occur during collaboration.
+
+## How to Use
+
+1. Register a new user account or log in.
+2. Create new tasks and assign them to users.
+3. Move tasks between columns via drag-and-drop.
+4. Use the "Smart Assign" feature to auto-distribute work.
+5. Monitor activity in the log panel on the right.
+6. Watch real-time updates as other users make changes.
+
+## Notes
+
+- All form validations are custom-built.
+- No third-party UI frameworks like Bootstrap or Tailwind CSS have been used.
+- Real-time sync is implemented using Socket.IO.
+- The app works smoothly on both desktop and mobile screens.
