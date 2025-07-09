@@ -1,32 +1,21 @@
-const { Activity, User, Todo } = require('../models');
-const ErrorResponse = require('../utils/errorResponse');
+const Activity = require('../models/Activity');
+const asyncHandler = require('../middleware/async');
 
-// @desc    Get all recent activities
+// @desc    Get all activities
 // @route   GET /api/activities
 // @access  Private
-exports.getActivities = async (req, res, next) => {
-  try {
-    const activities = await Activity.findAll({
-      limit: 20,
-      order: [['createdAt', 'DESC']],
-      where: { '$todo.user_id$': req.user.id },
-      include: [
-        {
-          model: User,
-          as: 'user',
-          attributes: ['name'], // Only send user's name
-        },
-        {
-          model: Todo,
-          as: 'todo',
-          attributes: ['title'], // Only send todo's title
-          paranoid: false, // Include soft-deleted todos
-        },
-      ],
-    });
+exports.getActivities = asyncHandler(async (req, res, next) => {
+  // We can filter activities based on the user if needed in the future
+  // For now, we get all recent activities
+  const activities = await Activity.find()
+    .populate('user', 'name email')
+    .populate('todo', 'title')
+    .sort({ createdAt: -1 })
+    .limit(20);
 
-    res.status(200).json({ success: true, data: activities });
-  } catch (error) {
-    next(error);
-  }
-};
+  res.status(200).json({
+    success: true,
+    count: activities.length,
+    data: activities,
+  });
+});

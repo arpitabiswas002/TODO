@@ -1,12 +1,13 @@
 {
   "name": "todo-mern-app-server",
   "version": "1.0.0",
-  "description": "Backend for MERN Todo App with MySQL",
+  "description": "Backend for MERN Todo App with MongoDB",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "db:create": "node -e \"require('dotenv').config(); const { execSync } = require('child_process'); execSync(`mysql -u ${process.env.DB_USER}${process.env.DB_PASSWORD ? ` -p${process.env.DB_PASSWORD}` : ''} -e 'CREATE DATABASE IF NOT EXISTS ${process.env.DB_NAME}'`); console.log('Database created or already exists');\""
+    "build": "echo 'Building server...'",
+    "db:create": "node config/seed.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -15,14 +16,15 @@
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
-    "mysql2": "^3.14.1",
-    "sequelize": "^6.37.7",
-    "sequelize-cli": "^6.6.1",
+    "mongoose": "^7.0.3",
+    "morgan": "^1.10.0",
     "socket.io": "^4.8.1",
-    "sqlite3": "^5.1.7",
     "validator": "^13.7.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.20"
+  },
+  "engines": {
+    "node": ">=14.0.0"
   }
 }

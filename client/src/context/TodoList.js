@@ -4,7 +4,14 @@ import { todosAPI, activityAPI } from '../services/api';
 import io from 'socket.io-client';
 import '../pages/TodoList.css';
 
-const socket = io('http://localhost:5000');
+// Use environment variable for the WebSocket URL, fallback to localhost for development
+const WS_URL = process.env.REACT_APP_WS_URL || process.env.REACT_APP_API_URL?.replace('http', 'ws') || 'ws://localhost:5000';
+const socket = io(WS_URL, {
+  reconnection: true,
+  reconnectionAttempts: 5,
+  reconnectionDelay: 1000,
+  timeout: 10000
+});
 
 const normalizeStatus = (status) => {
   if (!status) return 'todo';
@@ -47,25 +54,70 @@ const KanbanBoard = () => {
   };
 
   useEffect(() => {
+    if (!user) return;
+    
+    // Initial data fetch
     fetchTodos();
     fetchActivities();
 
     const handleActivity = (newActivity) => {
-      setActivities(prev => [newActivity, ...prev]);
+      console.log('New activity:', newActivity);
+      setActivities((prev) => [newActivity, ...prev]);
+      // Refresh todos when there's a new activity
       fetchTodos();
     };
-    
+
+    const handleTodoUpdated = (updatedTodo) => {
+      console.log('Todo updated:', updatedTodo);
+      setTodos((prevTodos) => {
+        const exists = prevTodos.some(todo => todo._id === updatedTodo._id);
+        if (exists) {
+          // Update existing todo
+          return prevTodos.map((todo) =>
+            todo._id === updatedTodo._id ? { ...todo, ...updatedTodo } : todo
+          );
+        } else {
+          // Add new todo if it doesn't exist
+          return [...prevTodos, updatedTodo];
+        }
+      });
+    };
+
+    const handleTodoDeleted = (deletedTodo) => {
+      console.log('Todo deleted:', deletedTodo);
+      setTodos((prevTodos) =>
+        prevTodos.filter((todo) => todo._id !== deletedTodo.id)
+      );
+    };
+
+    // Set up socket event listeners
+    socket.on('connect', () => {
+      console.log('WebSocket connected');
+      // Re-fetch data on reconnect
+      fetchTodos();
+      fetchActivities();
+    });
+
+    socket.on('disconnect', () => {
+      console.log('WebSocket disconnected');
+    });
+
+    socket.on('error', (error) => {
+      console.error('WebSocket error:', error);
+    });
+
     socket.on('activity', handleActivity);
+    socket.on('todoUpdated', handleTodoUpdated);
+    socket.on('todoDeleted', handleTodoDeleted);
 
-    const handleTaskUpdate = () => {
-      fetchTodos();
-    };
-
-    socket.on('task_updated', handleTaskUpdate);
-
+    // Cleanup function to remove listeners when component unmounts or user changes
     return () => {
       socket.off('activity', handleActivity);
-      socket.off('task_updated', handleTaskUpdate);
+      socket.off('todoUpdated', handleTodoUpdated);
+      socket.off('todoDeleted', handleTodoDeleted);
+      socket.off('connect');
+      socket.off('disconnect');
+      socket.off('error');
     };
   }, [user]);
 
@@ -199,7 +251,7 @@ const KanbanBoard = () => {
   return (
     <div className="kanban-board-container">
       <div className="kanban-header">
-        <h1>Kanban Board</h1>
+        <h1>✅My Task Manager</h1>
         <div className="header-user-info">
           <span>Welcome, {user.name}</span>
           <button onClick={() => setShowAddTask(!showAddTask)} className="add-task-btn">

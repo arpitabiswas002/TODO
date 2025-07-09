@@ -1,51 +1,55 @@
-const { DataTypes } = require('sequelize');
-const { sequelize } = require('../config/database');
+const mongoose = require('mongoose');
 
-const Activity = sequelize.define('Activity', {
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
+const activitySchema = new mongoose.Schema({
   type: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    comment: 'e.g., CREATE_TODO, UPDATE_STATUS, ASSIGN_USER, UPDATE_TITLE'
+    type: String,
+    required: [true, 'Activity type is required'],
+    enum: ['CREATE_TODO', 'UPDATE_STATUS', 'ASSIGN_USER', 'SMART_ASSIGN', 'UPDATE_TITLE', 'UPDATE_DESCRIPTION', 'UPDATE_DUE_DATE', 'DELETE_TODO'],
+    comment: 'Type of activity: CREATE_TODO, UPDATE_STATUS, ASSIGN_USER, etc.'
   },
   details: {
-    type: DataTypes.TEXT,
-    allowNull: false,
-    comment: 'A human-readable description of the activity.'
+    type: String,
+    required: [true, 'Activity details are required'],
+    trim: true
   },
-  userId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: 'Users',
-      key: 'id'
-    }
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: [true, 'Activity must belong to a user']
   },
-  todoId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: 'Todos',
-      key: 'id'
-    }
+  todo: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Todo',
+    required: [true, 'Activity must be associated with a todo']
+  },
+  oldValue: {
+    type: String,
+    default: null
+  },
+  newValue: {
+    type: String,
+    default: null
   }
 }, {
-  timestamps: true
+  timestamps: true,
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
 });
 
-Activity.associate = (models) => {
-  Activity.belongsTo(models.User, {
-    foreignKey: 'userId',
-    as: 'user'
+// Populate user and todo when finding activities
+activitySchema.pre(/^find/, function(next) {
+  this.populate({
+    path: 'user',
+    select: 'name email'
+  }).populate({
+    path: 'todo',
+    select: 'title'
   });
-  Activity.belongsTo(models.Todo, {
-    foreignKey: 'todoId',
-    as: 'todo'
-  });
-};
+  next();
+});
 
-module.exports = Activity;
+// Indexes for better query performance
+activitySchema.index({ todo: 1, createdAt: -1 });
+activitySchema.index({ user: 1, createdAt: -1 });
+
+module.exports = mongoose.model('Activity', activitySchema);

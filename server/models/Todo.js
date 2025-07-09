@@ -1,105 +1,70 @@
-const { DataTypes } = require('sequelize');
-const { sequelize } = require('../config/database');
+const mongoose = require('mongoose');
 
-const Todo = sequelize.define('Todo', {
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
+const todoSchema = new mongoose.Schema({
   title: {
-    type: DataTypes.STRING(100),
-    allowNull: false,
+    type: String,
+    required: [true, 'Please enter a title for your todo'],
+    maxlength: [100, 'Todo title cannot exceed 100 characters'],
+    trim: true,
     validate: {
-      notEmpty: { msg: 'Please enter a title for your todo' },
-      len: {
-        args: [1, 100],
-        msg: 'Todo title cannot exceed 100 characters'
+      validator: function(value) {
+        return !['Todo', 'In Progress', 'Done'].includes(value);
       },
-      notIn: {
-        args: [['Todo', 'In Progress', 'Done']],
-        msg: 'Task title cannot be a column name.'
-      }
+      message: 'Task title cannot be a column name.'
     }
   },
   description: {
-    type: DataTypes.TEXT,
-    allowNull: true,
-    validate: {
-      len: {
-        args: [0, 500],
-        msg: 'Description cannot exceed 500 characters'
-      }
-    }
+    type: String,
+    maxlength: [500, 'Description cannot exceed 500 characters'],
+    trim: true
   },
   completed: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false
+    type: Boolean,
+    default: false
   },
-  userId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: 'Users',
-      key: 'id'
-    }
-  },
+
   dueDate: {
-    type: DataTypes.DATE,
-    allowNull: true
+    type: Date
   },
   priority: {
-    type: DataTypes.ENUM('low', 'medium', 'high'),
-    defaultValue: 'medium'
+    type: String,
+    enum: ['low', 'medium', 'high'],
+    default: 'medium'
   },
   status: {
-    type: DataTypes.ENUM('todo', 'in_progress', 'done'),
-    defaultValue: 'todo',
-    allowNull: false,
-    validate: {
-      isIn: {
-        args: [['todo', 'in_progress', 'done']],
-        msg: 'Status must be either todo, in_progress, or done'
-      }
-    }
+    type: String,
+    enum: ['todo', 'in_progress', 'done'],
+    default: 'todo'
   },
-  assigneeId: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-    references: {
-      model: 'Users',
-      key: 'id'
-    }
+  assignee: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
+  creator: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: [true, 'A todo must have a creator']
   }
 }, {
   timestamps: true,
-  indexes: [
-    {
-      fields: ['title'],
-      using: 'BTREE'
-    },
-
-  ]
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
 });
 
-// Define associations
-Todo.associate = (models) => {
-  Todo.belongsTo(models.User, {
-    foreignKey: 'userId',
-    as: 'creator'
-  });
+// Virtual populate for activities
+todoSchema.virtual('activities', {
+  ref: 'Activity',
+  foreignField: 'todo',
+  localField: '_id'
+});
 
-  Todo.belongsTo(models.User, {
-    foreignKey: 'assigneeId',
-    as: 'assignee'
+// Populate user and assignee when finding todos
+todoSchema.pre(/^find/, function(next) {
+  this.populate({
+    path: 'assignee',
+    select: 'name email'
   });
+  next();
+});
 
-  Todo.hasMany(models.Activity, {
-    foreignKey: 'todoId',
-    as: 'activities',
-    onDelete: 'CASCADE',
-    hooks: true
-  });
-};
-
-module.exports = Todo;
+module.exports = mongoose.model('Todo', todoSchema);

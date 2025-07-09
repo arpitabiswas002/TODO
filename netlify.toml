@@ -1,0 +1,44 @@
+[build]
+  command = "cd client && npm install && npm run build && cd ../server && npm install"
+  publish = "client/build"
+  base = "/"
+
+[build.environment]
+  NODE_ENV = "production"
+
+[[redirects]]
+  from = "/(*)"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api"
+  status = 200
+
+[functions.node_version]
+  version = "18"
+
+[functions.env]
+  MYSQL_HOST = "@mysql_host"
+  MYSQL_PORT = "@mysql_port"
+  MYSQL_USER = "@mysql_user"
+  MYSQL_PASSWORD = "@mysql_password"
+  MYSQL_DATABASE = "@mysql_database"
+  JWT_SECRET = "@jwt_secret"
+  SESSION_SECRET = "@session_secret"
+
+[[plugins]]
+  package = "@netlify/plugin-functions-install-core"
+
+[context.production]
+  command = "cd client && npm install && npm run build && cd ../server && npm install && npm run build"
+  publish = "client/build"
+
+[context.deploy-preview]
+  command = "cd client && npm install && npm run build && cd ../server && npm install && npm run build"
+  publish = "client/build"
+
+[context.branch-deploy]
+  command = "cd client && npm install && npm run build && cd ../server && npm install && npm run build"
+  publish = "client/build"

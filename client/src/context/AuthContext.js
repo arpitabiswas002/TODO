@@ -68,7 +68,9 @@ export const AuthProvider = ({ children }) => {
 
   // Logout user
   const logout = () => {
-    setToken(null); // This triggers the effect to clear the user.
+    localStorage.removeItem('token');
+    setToken(null);
+    setUser(null);
     navigate('/login');
   };
 

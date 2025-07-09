@@ -8,3 +8,6 @@ client/node_modules/
 build/
 coverage/
 *.pem
+
+# Local Netlify folder
+.netlify
